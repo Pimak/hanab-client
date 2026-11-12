@@ -19,6 +19,9 @@ Thumbs.db
 .env.*
 *.local
 
+# Local checkout of the upstream hanab.live source used as a protocol reference
+.hanabi-live/
+
 # Logs
 *.log
 logs/
