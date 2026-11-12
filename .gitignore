@@ -1,0 +1,27 @@
+# Maven
+target/
+.flattened-pom.xml
+
+# IDE
+.idea/
+*.iml
+.vscode/
+.settings/
+.classpath
+.project
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Local configuration and credentials
+.env
+.env.*
+*.local
+
+# Logs
+*.log
+logs/
+
+# Maven wrapper cache / generated files
+.mvn/wrapper/maven-wrapper.jar
