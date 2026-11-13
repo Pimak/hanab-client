@@ -222,6 +222,14 @@ les métadonnées de replay et les permissions.
 3. Support complet des commandes et effets sonores.
 4. Hardening de compatibilité : messages inconnus, versionnement, métriques et tests de charge.
 
+### Mission suivante — Synchronisation continue avec le serveur courant (P0)
+
+Automatiser la détection des changements de Hanab Live, l'adaptation de la librairie par un agent
+interchangeable, le lancement d'un serveur local éphémère et les tests d'intégration contre ce
+serveur. Chaque synchronisation doit produire un changelog et une PR vérifiable avant la
+publication de la version correspondant au serveur courant. Voir
+[`continuous-server-synchronization.md`](continuous-server-synchronization.md).
+
 ## Critères de sortie de la première version utilisable
 
 - Un appelant peut se connecter, se reconnecter et fermer la session proprement.
