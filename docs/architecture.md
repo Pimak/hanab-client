@@ -2,12 +2,12 @@
 
 ## Scope
 
-`hanab-client` is a reusable library, not an application and not an `consumer-app` module. It owns
-communication with hanab.live and exposes a stable, framework-neutral interface to callers.
+`hanab-client` is a reusable library, not an application-specific module. It owns communication
+with hanab.live and exposes a stable, framework-neutral interface to callers.
 
-The initial repository deliberately contains no network client implementation. This keeps the
-first public interface small and gives protocol decisions a place to be documented before they
-become dependencies for downstream projects.
+The repository now contains a JDK-only HTTP/WebSocket implementation. Protocol decisions are
+captured by the codec, fixtures and contract tests; the public API keeps transport details behind
+`HanabClient` while exposing immutable domain projections.
 
 ## Proposed package layout
 
@@ -31,18 +31,19 @@ constructing JSON messages, managing WebSocket frames or knowing reconnect detai
 4. `internal` may support any implementation package but must not be imported by consumers.
 5. Spring, Quarkus, MCP and logging integrations belong in separate artifacts if they are needed.
 
-The initial artifact has no runtime dependency beyond the JDK. A JSON library or WebSocket client
-will be added only when the protocol implementation requires it and after its impact on consumers
-has been evaluated.
+The implementation uses the JDK HTTP/WebSocket APIs and has a runtime dependency on Jackson
+Databind for JSON trees. Consumers must keep Jackson on the runtime classpath; Spring, Quarkus,
+MCP and logging integrations remain outside this artifact.
 
 ## Planned development order
 
 1. Capture the hanab.live HTTP/WebSocket protocol as fixtures and contract tests.
 2. Define immutable model types and error categories.
 3. Define the smallest useful public client interface.
-4. Implement a replaceable transport adapter with deterministic timeout and reconnect behavior.
-5. Add integration tests against a local fake server.
-6. Integrate `consumer-app` through the public interface only.
+4. Keep the replaceable transport adapter deterministic for timeout, reconnect and error handling.
+5. Maintain unit/fixture tests and integration tests against the local Hanab Live bot server.
+6. Keep application-specific integrations in separate adapter artifacts; historical consumer
+   models are not part of this core module.
 
 ## Publication
 

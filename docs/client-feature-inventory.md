@@ -257,8 +257,7 @@ Les fonctionnalités observées sont issues des sources de première partie suiv
 - [Décisions d'architecture de `hanab-client`](architecture.md)
 
 Les priorités et le découpage en phases sont des propositions pour ce module. Ils devront
-être confirmés avec les consommateurs, en particulier `consumer-app`, avant de devenir un
-contrat public.
+être confirmés avec les consommateurs avant de devenir un contrat public.
 
 ## Décisions à prendre avant l'implémentation
 

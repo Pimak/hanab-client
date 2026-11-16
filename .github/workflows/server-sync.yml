@@ -1,0 +1,50 @@
+name: Hanab Live protocol synchronization
+
+on:
+  schedule:
+    - cron: '17 3 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: hanab-live-protocol-synchronization
+  cancel-in-progress: false
+
+jobs:
+  detect-and-verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - name: Check upstream revision
+        id: revision
+        shell: pwsh
+        run: |
+          $result = ./automation/check-server-revision.ps1
+          $result | Tee-Object -FilePath server-revision-check.json
+          $parsed = $result | ConvertFrom-Json
+          "changed=$($parsed.changed.ToString().ToLowerInvariant())" >> $env:GITHUB_OUTPUT
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: server-revision-check
+          path: server-revision-check.json
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+          cache: maven
+      - name: Verify client and available integration tests
+        env:
+          HANAB_TEST_SERVER: ${{ secrets.HANAB_TEST_SERVER }}
+          HANAB_TEST_USER_A: ${{ secrets.HANAB_TEST_USER_A }}
+          HANAB_TEST_PASSWORD_A: ${{ secrets.HANAB_TEST_PASSWORD_A }}
+          HANAB_TEST_USER_B: ${{ secrets.HANAB_TEST_USER_B }}
+          HANAB_TEST_PASSWORD_B: ${{ secrets.HANAB_TEST_PASSWORD_B }}
+        run: ./mvnw --batch-mode --no-transfer-progress verify
+      - name: Explain synchronization handoff
+        if: steps.revision.outputs.changed == 'true'
+        run: |
+          echo "The upstream protocol revision changed. Review server-revision-check.json and update the isolated synchronization branch."
