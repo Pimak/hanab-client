@@ -27,7 +27,7 @@ jobs:
           --health-retries 20
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-java@v4
+      - uses: actions/setup-java@v5
         with:
           distribution: temurin
           java-version: '21'
@@ -51,7 +51,7 @@ jobs:
           bun run build-client
           printf '%s\n' \
             'DOMAIN="localhost"' \
-            'SESSION_SECRET="ci-session-secret-ci-session-secret-ci-session-secret-ci-session-secret"' \
+            'SESSION_SECRET="ci-session-secret-ci-session-secret-ci-session-secret-ci-session-secret-ci-session-secret-ci-session-secret-ci-session-secret-ci-session-secret"' \
             'PORT="1212"' \
             'DB_HOST="127.0.0.1"' \
             'DB_PORT="5432"' \
@@ -78,7 +78,7 @@ jobs:
           HANAB_TEST_PASSWORD_A: ci-command-password-a
           HANAB_TEST_USER_B: ci-command-b
           HANAB_TEST_PASSWORD_B: ci-command-password-b
-        run: ./mvnw --batch-mode --no-transfer-progress -Dhanab.integration.run=true -Dtest=ProtocolCommandIntegrationTest test
+        run: bash ./mvnw --batch-mode --no-transfer-progress -Dhanab.integration.run=true -Dtest=ProtocolCommandIntegrationTest test
       - name: Upload upstream server log
         if: always()
         uses: actions/upload-artifact@v4
