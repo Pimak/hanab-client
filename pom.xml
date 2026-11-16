@@ -75,6 +75,8 @@
     </build>
 
     <profiles>
+        <!-- The only release entry point is semantic-release. Its publish step invokes
+             `mvn deploy -Prelease` so this profile remains the single Maven publication definition. -->
         <profile>
             <id>release</id>
             <build>

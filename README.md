@@ -44,8 +44,19 @@ On Windows:
 
 The planned Maven coordinates are `io.github.pimak:hanab-client`. The `release` Maven profile
 already attaches sources, Javadoc and signatures and is prepared for deployment through the Maven
-Central Publisher. Publication is intentionally not enabled until the library has a first usable
-release.
+Central Publisher.
+
+## Releases
+
+Releases are automated with [semantic-release](https://semantic-release.gitbook.io/semantic-release/).
+Pushes to `main` use Conventional Commits to determine the next version, update `pom.xml`, generate
+`CHANGELOG.md`, create a `vX.Y.Z` Git tag and GitHub release, then publish the signed Maven
+artifacts through the Maven `release` profile. The profile is invoked by semantic-release during
+its publish phase; there is no separate Maven release workflow.
+
+The release workflow requires the repository secrets `MAVEN_USERNAME`, `MAVEN_PASSWORD`,
+`MAVEN_GPG_PRIVATE_KEY` and `MAVEN_GPG_PASSPHRASE`. Use `feat:` for a minor release, `fix:` for a
+patch release, and `BREAKING CHANGE:` (or `!`) for a major release.
 
 ## License
 
