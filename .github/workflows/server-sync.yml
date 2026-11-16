@@ -17,7 +17,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 30
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - name: Check upstream revision
         id: revision
         shell: pwsh
@@ -26,7 +26,7 @@ jobs:
           $result | Tee-Object -FilePath server-revision-check.json
           $parsed = $result | ConvertFrom-Json
           "changed=$($parsed.changed.ToString().ToLowerInvariant())" >> $env:GITHUB_OUTPUT
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v6
         if: always()
         with:
           name: server-revision-check

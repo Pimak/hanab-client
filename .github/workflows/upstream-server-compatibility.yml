@@ -28,13 +28,13 @@ jobs:
           --health-timeout 5s
           --health-retries 20
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - uses: actions/setup-java@v5
         with:
           distribution: temurin
           java-version: '21'
           cache: maven
-      - uses: actions/setup-python@v5
+      - uses: actions/setup-python@v6
         with:
           python-version: '3.x'
       - uses: oven-sh/setup-bun@v2
@@ -83,7 +83,7 @@ jobs:
         run: bash ./mvnw --batch-mode --no-transfer-progress -Dhanab.integration.run=true -Dtest=ProtocolCommandIntegrationTest test
       - name: Upload upstream server log
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: hanabi-live-server-log
           path: ${{ runner.temp }}/hanabi-live.log
