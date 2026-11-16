@@ -3,10 +3,10 @@ package com.pimak.hanab.client.api;
 import java.net.URI;
 import java.time.Duration;
 
-public record ClientConfig(URI baseUri, String clientKind, String version, Duration requestTimeout,
+public record ClientConfig(URI baseUri, Duration requestTimeout,
                            Duration reconnectInitial, Duration reconnectMax) {
     public ClientConfig {
-        if (baseUri == null || clientKind == null || requestTimeout == null || reconnectInitial == null || reconnectMax == null) throw new NullPointerException();
+        if (baseUri == null || requestTimeout == null || reconnectInitial == null || reconnectMax == null) throw new NullPointerException();
         if (baseUri.getUserInfo() != null) throw new IllegalArgumentException("base URI must not contain user information");
         if (!"http".equals(baseUri.getScheme()) && !"https".equals(baseUri.getScheme())) throw new IllegalArgumentException("base URI must be HTTP(S)");
         if ("http".equals(baseUri.getScheme()) && !isLoopback(baseUri.getHost())) throw new IllegalArgumentException("HTTP is only allowed for a loopback test server");
@@ -21,7 +21,6 @@ public record ClientConfig(URI baseUri, String clientKind, String version, Durat
         catch (java.net.URISyntaxException e) { throw new IllegalArgumentException("invalid base URI", e); }
     }
     private static boolean isLoopback(String host) { return "localhost".equalsIgnoreCase(host) || "127.0.0.1".equals(host) || "::1".equals(host); }
-    public static ClientConfig of(URI baseUri) { return new ClientConfig(baseUri, "app", null, Duration.ofSeconds(15), Duration.ofMillis(250), Duration.ofSeconds(10)); }
-    /** Configuration for the Hanab bot protocol: no web release version is sent. */
-    public static ClientConfig bot(URI baseUri) { return new ClientConfig(baseUri, "bot", null, Duration.ofSeconds(15), Duration.ofMillis(250), Duration.ofSeconds(10)); }
+    /** Configuration for the only supported protocol client: a Hanab bot. */
+    public static ClientConfig bot(URI baseUri) { return new ClientConfig(baseUri, Duration.ofSeconds(15), Duration.ofMillis(250), Duration.ofSeconds(10)); }
 }

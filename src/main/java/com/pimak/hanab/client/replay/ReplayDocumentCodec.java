@@ -3,7 +3,7 @@ package com.pimak.hanab.client.replay;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.pimak.hanab.client.model.ReplayDocument;
-import com.pimak.hanab.client.protocol.ProtocolCodec;
+import com.pimak.hanab.client.protocol.ProtocolPayloadCodec;
 import com.pimak.hanab.client.protocol.ProtocolDecodeException;
 import java.util.LinkedHashMap;
 import java.util.Objects;
@@ -14,7 +14,7 @@ public final class ReplayDocumentCodec {
     private ReplayDocumentCodec() { }
 
     public static ReplayDocument importJson(String json) throws ProtocolDecodeException {
-        return ProtocolCodec.decodeReplayDocument(Objects.requireNonNull(json, "json"));
+        return ProtocolPayloadCodec.decodeReplayDocument(Objects.requireNonNull(json, "json"));
     }
 
     public static String exportJson(ReplayDocument document) {

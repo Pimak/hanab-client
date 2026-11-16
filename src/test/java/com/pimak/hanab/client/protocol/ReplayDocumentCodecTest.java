@@ -8,7 +8,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 class ReplayDocumentCodecTest {
     @Test
     void acceptsSeedOnlyReplayAndPreservesOptionalMetadata() throws Exception {
-        var replay = ProtocolCodec.decodeReplayDocument("""
+        var replay = ProtocolPayloadCodec.decodeReplayDocument("""
                 {"seed":"p2v0s1","options":{"speedrun":true},"actions":[{"type":"play","order":3}],"future":true}
                 """);
         assertEquals("p2v0s1", replay.seed().orElseThrow());
@@ -19,7 +19,7 @@ class ReplayDocumentCodecTest {
 
     @Test
     void legacyReplayDecoderAcceptsDeckOnlyDocuments() throws Exception {
-        var replay = ProtocolCodec.decodeReplay("{\"deck\":[{\"suitIndex\":0,\"rank\":1}],\"actions\":[]}");
+        var replay = ProtocolPayloadCodec.decodeReplay("{\"deck\":[{\"suitIndex\":0,\"rank\":1}],\"actions\":[]}");
         assertTrue(replay.seed().isEmpty());
         assertTrue(replay.unknownFields().containsKey("deck"));
     }

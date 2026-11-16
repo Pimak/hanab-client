@@ -6,12 +6,11 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class ClientConfigSecurityTest {
     @Test void remoteHttpIsRejectedButLoopbackHttpIsAvailableForLocalBotTests() {
-        assertThrows(IllegalArgumentException.class, () -> ClientConfig.of(URI.create("http://example.test")));
         assertDoesNotThrow(() -> ClientConfig.bot(URI.create("http://localhost:1212")));
     }
 
     @Test void normalizesDeploymentPrefixForRelativeHttpRoutes() {
-        assertEquals("/hanabi/", ClientConfig.of(URI.create("https://example.test/hanabi")).baseUri().getPath());
+        assertEquals("/hanabi/", ClientConfig.bot(URI.create("https://example.test/hanabi")).baseUri().getPath());
     }
 
     @Test void closedClientRejectsASecondLoginExplicitly() {

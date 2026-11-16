@@ -74,7 +74,9 @@ class LocalServerIntegrationTest {
                     .payload().path("tableId").asLong(-1));
 
             owner.startTable(new com.pimak.hanab.client.model.Ids.TableId(tableId),
-                    java.util.List.of(config.userA(), config.userB())).toCompletableFuture().get(20, TimeUnit.SECONDS);
+                    java.util.List.of(owner.identitySnapshot().toCompletableFuture().get(20, TimeUnit.SECONDS).userId().orElseThrow(),
+                            player.identitySnapshot().toCompletableFuture().get(20, TimeUnit.SECONDS).userId().orElseThrow()))
+                    .toCompletableFuture().get(20, TimeUnit.SECONDS);
             assertEquals(tableId, ownerEvents.next(message -> message.command().equals("tableStarted"), 20)
                     .payload().path("tableId").asLong(-1));
 

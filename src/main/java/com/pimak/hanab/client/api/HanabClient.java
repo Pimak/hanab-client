@@ -29,11 +29,11 @@ public interface HanabClient extends AutoCloseable {
     /** Leaves the lobby table; unlike leaveTable this uses the protocol's tableLeave command. */
     CompletionStage<Void> leaveLobbyTable(Ids.TableId tableId);
     CompletionStage<Void> spectate(Ids.TableId tableId, Integer shadowingPlayerIndex);
-    CompletionStage<Void> startTable(Ids.TableId tableId, java.util.List<String> intendedPlayers);
+    CompletionStage<Void> startTable(Ids.TableId tableId, java.util.List<Ids.UserId> intendedPlayers);
     CompletionStage<Void> play(Ids.TableId tableId, Ids.CardOrder order);
     CompletionStage<Void> discard(Ids.TableId tableId, Ids.CardOrder order);
     CompletionStage<Void> clueAction(Ids.TableId tableId, int receiverIndex, com.pimak.hanab.client.game.Clue clue);
-    CompletionStage<Void> pause(Ids.TableId tableId, String setting);
+    CompletionStage<Void> pause(Ids.TableId tableId, boolean paused);
     CompletionStage<Void> note(Ids.TableId tableId, Ids.CardOrder order, String text);
     CompletionStage<Void> chat(String text, Ids.TableId tableId);
     CompletionStage<Void> privateChat(String recipient, String text);
@@ -49,10 +49,10 @@ public interface HanabClient extends AutoCloseable {
     CompletionStage<Void> updateTable(Ids.TableId tableId, TableSettings settings);
     CompletionStage<Void> setOwner(Ids.TableId tableId, Ids.UserId userId);
     CompletionStage<Void> kick(Ids.TableId tableId, String username);
-    CompletionStage<Void> restart(Ids.TableId tableId, boolean hidePregame);
+    CompletionStage<Void> restart(Ids.TableId tableId, boolean startNow);
     CompletionStage<Void> declineRestart(Ids.TableId tableId, boolean declined);
     CompletionStage<Void> terminate(Ids.TableId tableId);
-    CompletionStage<Void> terminateVote(Ids.TableId tableId);
+    CompletionStage<Void> terminateVote(Ids.TableId tableId, boolean voted);
     CompletionStage<Void> tag(Ids.TableId tableId, String tag, boolean add);
     CompletionStage<Void> removeAllTags(Ids.TableId tableId);
     CompletionStage<Void> relationship(String command, String username);

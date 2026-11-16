@@ -32,7 +32,7 @@ public record ServerEvent(Instant receivedAt, WireMessage message) {
         rejectUnknown(message.payload(), java.util.Set.of("tableId", "owner"), "tableOwner");
         var owner = message.payload().get("owner");
         if (owner == null || !owner.isObject()) throw new IllegalArgumentException("tableOwner is missing owner");
-        try { return Optional.of(new TableOwnerChanged(tableId(message.payload()), com.pimak.hanab.client.protocol.ProtocolCodec.decodeUser(new com.fasterxml.jackson.databind.ObjectMapper().writeValueAsString(owner)))); }
+        try { return Optional.of(new TableOwnerChanged(tableId(message.payload()), com.pimak.hanab.client.protocol.ProtocolPayloadCodec.decodeUser(new com.fasterxml.jackson.databind.ObjectMapper().writeValueAsString(owner)))); }
         catch (Exception error) { throw new IllegalArgumentException("invalid table owner", error); }
     }
     public Optional<SpectatorsUpdated> spectatorsUpdated() {

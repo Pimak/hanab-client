@@ -9,7 +9,6 @@ import com.pimak.hanab.client.game.GameState;
 import com.pimak.hanab.client.game.GameStateReducer;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.pimak.hanab.client.protocol.ProtocolCodec;
 import com.pimak.hanab.client.protocol.ProtocolDecodeException;
 
 import java.util.ArrayList;
