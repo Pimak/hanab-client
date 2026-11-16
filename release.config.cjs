@@ -9,9 +9,9 @@ module.exports = {
       '@semantic-release/exec',
       {
         prepareCmd:
-          './mvnw --batch-mode --no-transfer-progress versions:set -DnewVersion=${nextRelease.version} -DgenerateBackupPoms=false',
+          'bash ./mvnw --batch-mode --no-transfer-progress versions:set -DnewVersion=${nextRelease.version} -DgenerateBackupPoms=false',
         publishCmd:
-          './mvnw --batch-mode --no-transfer-progress deploy -Prelease'
+          'bash ./mvnw --batch-mode --no-transfer-progress deploy -Prelease'
       }
     ],
     [
