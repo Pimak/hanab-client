@@ -40,3 +40,11 @@ action `play` suivie d'un `gameEvent`. Les tests d'intégration sont opt-in et n
 après plusieurs exécutions rapprochées, attendre la durée indiquée par le serveur avant de
 relancer les tests. Si `.env.local` est absent, le test est automatiquement ignoré afin que la
 suite unitaire reste exécutable sur une machine sans serveur.
+
+## État du serveur local utilisé
+
+Le serveur Docker a été reconstruit depuis la révision courante référencée par le projet.
+Après redémarrage, il s'arrête actuellement avec `Client assets do not match the compiled
+server revision`. La suite d'intégration est donc bien en place et opt-in, mais son passage
+réel reste conditionné à la régénération des assets du dépôt serveur ; `verify` laisse ces
+tests désactivés par défaut.

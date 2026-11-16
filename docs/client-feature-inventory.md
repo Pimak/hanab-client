@@ -5,7 +5,7 @@
 Ce document recense les capacités qu'une bibliothèque cliente JVM doit exposer pour
 interagir avec Hanab Live. Il sert de base à la roadmap du module `hanab-client`.
 
-Le client est une bibliothèque réutilisable, pas une copie de l'interface web. Il doit
+Le client est une bibliothèque réutilisable pour des utilisateurs de type bot, pas une copie de l'interface web. Il doit
 fournir des modèles immuables, des opérations métier et des événements typés. Le rendu
 visuel, les raccourcis clavier, les animations et le stockage local restent à la charge
 de l'application qui consomme la bibliothèque.
@@ -19,7 +19,7 @@ Les priorités proposées sont :
 
 ## Principes de conception
 
-- Masquer le format `commande JSON` et le transport WebSocket derrière une API métier.
+- Masquer les trames structurées JSON et le transport WebSocket derrière une API métier.
 - Séparer l'état courant, les événements reçus et les actions envoyées.
 - Préserver les informations inconnues ou ajoutées par le serveur pour rester compatible
   avec les évolutions du protocole.
@@ -37,8 +37,8 @@ Les priorités proposées sont :
 | AUTH-01 | P0 | Connexion par identifiant et mot de passe | Appel HTTP de connexion, conservation sûre de la session et retour d'une erreur typée. |
 | AUTH-02 | P1 | Identité courante | Récupérer l'utilisateur connecté, son statut, ses relations et les informations de session. |
 | AUTH-03 | P1 | Déconnexion | Fermer proprement la connexion et invalider les données de session locales. |
-| AUTH-04 | P1 | Création de compte invité ou bot | Supporter les paramètres de connexion utilisés par les clients non web, si ce parcours est retenu. |
-| AUTH-05 | P2 | Réinitialisation de mot de passe | Exposer l'appel HTTP correspondant sans stocker le mot de passe ou le secret en clair. |
+| AUTH-04 | P1 | Création de compte bot | Supporter le parcours de création de compte utilisé par un bot. |
+| AUTH-05 | Hors périmètre | Réinitialisation de mot de passe | Les parcours de gestion humaine du compte ne sont pas exposés par ce client bot. |
 | AUTH-06 | P1 | Version et compatibilité | Lire la version du serveur/client et détecter un protocole incompatible. |
 
 ### 2. Transport et cycle de vie
@@ -144,16 +144,16 @@ Les priorités proposées sont :
 | INT-01 | P1 | Taguer une partie | Ajouter, retirer et lister les tags d'une partie ou d'un replay. |
 | INT-02 | P1 | Rechercher par tag | Rechercher les parties associées à un tag et paginer les résultats. |
 | INT-03 | P1 | Liens partageables | Générer et analyser les références de table, replay, replay partagé et tour. |
-| INT-04 | P1 | Bot/app client | Supporter les paramètres de connexion et les limitations propres aux bots ou applications. |
+| INT-04 | P0 | Client bot | Utiliser exclusivement les paramètres et limitations du protocole bot courant. |
 | INT-05 | P2 | Seed et parties similaires | Rechercher des parties par seed, score ou variante pour l'entraînement et la compétition. |
 | INT-06 | P2 | Compatibilité API HTTP | Encapsuler les endpoints HTTP publics non couverts par WebSocket, avec pagination et erreurs. |
 
 ## Contrat technique à respecter
 
-Le dépôt officiel décrit le wire protocol comme `commande JSON` sur WebSocket et comme
-des corps JSON pour HTTP. Le client Java devra donc prévoir :
+La révision serveur prise en charge décrit un protocole bot structuré sur WebSocket et des
+corps JSON pour HTTP. Le client Java doit donc prévoir :
 
-- un codec qui sépare le nom de commande du payload ;
+- des requêtes `{id, request, data}` et des réponses/événements `{reply, data}` / `{event, data}` ;
 - des DTO de transport distincts des modèles publics du domaine ;
 - le rejet ou la conservation contrôlée des champs inconnus selon la politique de compatibilité ;
 - l'omission des champs optionnels absents, sans transformer implicitement un `null` en valeur ;
@@ -239,7 +239,7 @@ publication de la version correspondant au serveur courant. Voir
 - Une partie terminée peut être chargée et parcourue comme replay.
 - Les tests couvrent au minimum login, handshake, reconnexion, table, action de jeu,
   fin de partie et replay.
-- L'API ne dépend ni de Spring, ni de Quarkus, ni de MCP, ni d'une UI.
+- L'API ne dépend ni de Spring, ni de Quarkus, ni de MCP, ni d'une UI, et ne contient aucun parcours utilisateur humain.
 
 ## Sources de référence
 
@@ -259,14 +259,14 @@ Les fonctionnalités observées sont issues des sources de première partie suiv
 Les priorités et le découpage en phases sont des propositions pour ce module. Ils devront
 être confirmés avec les consommateurs avant de devenir un contrat public.
 
-## Décisions à prendre avant l'implémentation
+## Décisions prises pour l'implémentation actuelle
 
-- Quelle version du protocole Hanab Live doit être supportée et quelle stratégie de
-  compatibilité est attendue lors d'un changement serveur ?
-- La première version doit-elle couvrir un joueur, un spectateur, un replay, un bot,
-  ou les quatre parcours ?
-- L'authentification doit-elle gérer uniquement le login/mot de passe ou aussi les
-  cookies, tokens d'identité et création de compte bot ?
+- La seule version supportée est la révision serveur enregistrée dans
+  `automation/server-revision.json`; les anciens protocoles ne sont pas maintenus.
+- Le périmètre est exclusivement le bot : joueur, spectateur et replay sont des rôles
+  du bot connecté, pas des clients humains distincts.
+- L'authentification couvre le login bot, la création de compte bot et la session bot;
+  aucun flux web/humain n'est exposé.
 - Les variantes doivent-elles rester génériques dans Java, ou le module doit-il exposer
   des règles métier détaillées ?
 - Les notes et conventions doivent-elles être modélisées sémantiquement ou transportées

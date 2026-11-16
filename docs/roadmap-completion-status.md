@@ -1,45 +1,42 @@
 # État de couverture de la roadmap client
 
-Ce document complète `client-feature-inventory.md` avec l'état vérifié contre la
-révision locale de `.hanabi-live` utilisée par les tests.
+La roadmap est implémentée pour le périmètre retenu : un client Java 21 destiné
+exclusivement aux utilisateurs bot et aligné sur la dernière révision du serveur
+enregistrée dans `automation/server-revision.json`.
 
 ## Couverture livrée
 
-Les parcours d'authentification bot/app, HTTP public, WebSocket, lobby, tables,
-partie, notes, horloges, présence, chat, relations, catalogue, tags, replays JSON,
-navigation de replay, hypothétiques, actions de replay partagé, suggestions,
-reconnexion, heartbeat, métriques, validations locales et tests d'intégration sont
-implémentés dans l'API Java et couverts par les tests unitaires ou
-`LocalServerIntegrationTest`.
+- authentification bot, création de compte bot, identité, déconnexion et reconnexion ;
+- HTTP public nécessaire aux bots, avec erreurs typées et configuration externe ;
+- WebSocket structuré courant : requêtes `{id, request, data}`, réponses `{reply, data}`
+  et événements `{event, data}` ;
+- corrélation des réponses, délais d'attente, reconnexion avec backoff et heartbeat ;
+- lobby, présence, tables, spectateurs, propriétaire, démarrage par identifiants bot,
+  redémarrage, pause, votes et actions de partie ;
+- état de partie, événements, notes, chat, relations, catalogue, tags et pagination ;
+- replays JSON, navigation, replay partagé, suggestions et annotations ;
+- tests unitaires, tests de fixtures et test d'intégration opt-in contre une URL configurée.
 
-Le protocole bot reste explicite : `client=bot`, sans version web, avec le cycle
-serveur `tableStarted → gameInit → gameState → gameLoaded`.
+## Hors périmètre assumé
 
-## Limites vérifiées du protocole courant
+- aucun client humain, web ou `app` ;
+- aucune compatibilité avec l'ancien protocole textuel ;
+- division de table, création d'une partie depuis un curseur partiel et temps de revue,
+  car la révision serveur courante ne publie pas ces opérations ;
+- rendu UI, sons, préférences locales et gestion humaine des comptes.
 
-Les éléments suivants ne peuvent pas être ajoutés comme commandes autonomes sans
-inventer un protocole qui n'existe pas dans la révision serveur locale :
+## Vérification
 
-- `TABLE-09` : aucune commande de division de table n'est publiée ;
-- `REPLAY-09` : le serveur accepte une source sauvegardée/importée complète, mais
-  pas la création d'une partie depuis un curseur partiel arbitraire ;
-- `REPLAY-10` : aucun compteur de temps de revue n'est présent dans les messages
-  ou snapshots courants ;
-- la corrélation par identifiant de requête : le wire protocol n'envoie pas
-  d'identifiant générique, donc `sendAndWait` sérialise les attentes et filtre les
-  événements selon leur type/payload ;
-- la négociation de version pour `app` et `bot` : le serveur réserve la validation
-  de release au client `web` ; le client Java rejette volontairement une version
-  web fournie au protocole bot.
-
-## Vérification actuelle
-
-La commande suivante est la porte de sortie locale :
+Commande de vérification locale :
 
 ```powershell
 .\mvnw.cmd --batch-mode --no-transfer-progress verify
 ```
 
-Elle passe avec les tests unitaires, les tests de protocole, les tests HTTP et les
-trois tests d'intégration contre `http://localhost:1212/` configurés par
-`.env.local`.
+Le test d'intégration réel est volontairement opt-in :
+
+```powershell
+.\mvnw.cmd --batch-mode --no-transfer-progress "-Dhanab.integration.run=true" "-Dtest=LocalServerIntegrationTest" test
+```
+
+Les identifiants et l'URL sont lus depuis `.env.local`, jamais indexé par Git.
