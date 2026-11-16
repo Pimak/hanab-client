@@ -162,7 +162,7 @@ class LocalServerIntegrationTest {
         }
     }
 
-    private record TestConfig(URI server, String userA, String passwordA, String userB, String passwordB) {
+    static record TestConfig(URI server, String userA, String passwordA, String userB, String passwordB) {
         static TestConfig load() throws IOException {
             if (!Boolean.getBoolean("hanab.integration.run")) return null;
             Path path = Path.of(System.getProperty("hanab.integration.config", ".env.local"));

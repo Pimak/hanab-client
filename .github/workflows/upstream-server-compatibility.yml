@@ -1,0 +1,87 @@
+name: Upstream server command compatibility
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  compatibility:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    services:
+      postgres:
+        image: postgres:18
+        env:
+          POSTGRES_USER: hanabiuser
+          POSTGRES_PASSWORD: 1234567890
+          POSTGRES_DB: hanabi
+        options: >-
+          --health-cmd "pg_isready -U hanabiuser -d hanabi"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+          cache: maven
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.x'
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: '1.4.4'
+      - uses: dtolnay/rust-toolchain@stable
+      - name: Clone hanab.live origin/main
+        run: |
+          git clone --single-branch --branch main https://github.com/Hanabi-Live/hanabi-live.git "$RUNNER_TEMP/hanabi-live"
+          git -C "$RUNNER_TEMP/hanabi-live" fetch origin main
+          git -C "$RUNNER_TEMP/hanabi-live" checkout --detach origin/main
+      - name: Build upstream client and server
+        working-directory: ${{ runner.temp }}/hanabi-live
+        run: |
+          bun install --frozen-lockfile
+          bun run build-client
+          printf '%s\n' \
+            'DOMAIN="localhost"' \
+            'SESSION_SECRET="ci-session-secret-ci-session-secret-ci-session-secret-ci-session-secret"' \
+            'PORT="1212"' \
+            'DB_HOST="127.0.0.1"' \
+            'DB_PORT="5432"' \
+            'DB_USER="hanabiuser"' \
+            'DB_PASSWORD="1234567890"' \
+            'DB_NAME="hanabi"' > .env
+          cargo build --locked --manifest-path server/Cargo.toml
+          server/target/debug/hanabi-live migrate apply
+      - name: Start upstream server
+        working-directory: ${{ runner.temp }}/hanabi-live
+        run: |
+          nohup server/target/debug/hanabi-live > "$RUNNER_TEMP/hanabi-live.log" 2>&1 &
+          echo $! > "$RUNNER_TEMP/hanabi-live.pid"
+          for attempt in {1..60}; do
+            curl --fail --silent --show-error http://127.0.0.1:1212/ > /dev/null && exit 0
+            sleep 1
+          done
+          cat "$RUNNER_TEMP/hanabi-live.log"
+          exit 1
+      - name: Run every client command against origin/main
+        env:
+          HANAB_TEST_SERVER: http://127.0.0.1:1212
+          HANAB_TEST_USER_A: ci-command-a
+          HANAB_TEST_PASSWORD_A: ci-command-password-a
+          HANAB_TEST_USER_B: ci-command-b
+          HANAB_TEST_PASSWORD_B: ci-command-password-b
+        run: ./mvnw --batch-mode --no-transfer-progress -Dhanab.integration.run=true -Dtest=ProtocolCommandIntegrationTest test
+      - name: Upload upstream server log
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: hanabi-live-server-log
+          path: ${{ runner.temp }}/hanabi-live.log
