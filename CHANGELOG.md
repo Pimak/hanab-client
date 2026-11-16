@@ -1,0 +1,12 @@
+# 1.0.0 (2026-11-16)
+
+
+### Bug Fixes
+
+* invoke Maven wrapper through bash ([bcb0f8a](https://github.com/Pimak/hanab-client/commit/bcb0f8a388374097e5d3de356c88c7af1c72ed18))
+
+
+### Features
+
+* add Hanab Live client implementation ([cb808b1](https://github.com/Pimak/hanab-client/commit/cb808b1cfb7b3c4d71885c0d3af9a02a4f55eeec))
+* align client with current bot protocol ([ae35b49](https://github.com/Pimak/hanab-client/commit/ae35b49eef622d9e1d02ecf099872166c0764265))
