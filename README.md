@@ -54,9 +54,10 @@ Pushes to `main` use Conventional Commits to determine the next version, update 
 artifacts through the Maven `release` profile. The profile is invoked by semantic-release during
 its publish phase; there is no separate Maven release workflow.
 
-The release workflow requires the repository secrets `MAVEN_USERNAME`, `MAVEN_PASSWORD`,
-`MAVEN_GPG_PRIVATE_KEY` and `MAVEN_GPG_PASSPHRASE`. Use `feat:` for a minor release, `fix:` for a
-patch release, and `BREAKING CHANGE:` (or `!`) for a major release.
+The release workflow uses the same Central Portal secret names as the other Pimak Maven projects:
+`MAVEN_CENTRAL_TOKEN_USERNAME`, `MAVEN_CENTRAL_TOKEN_PASSWORD`, `GPG_PRIVATE_KEY` and
+`GPG_PASSPHRASE`. Use `feat:` for a minor release, `fix:` for a patch release, and `BREAKING
+CHANGE:` (or `!`) for a major release.
 
 ## License
 
