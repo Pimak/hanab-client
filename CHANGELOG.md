@@ -1,3 +1,10 @@
+## [1.0.1](https://github.com/Pimak/hanab-client/compare/v1.0.0...v1.0.1) (2026-11-17)
+
+
+### Bug Fixes
+
+* update Hanab Live server revision ([4b88e17](https://github.com/Pimak/hanab-client/commit/4b88e1752dd589740a5cadda54b95e532e6f888a))
+
 # 1.0.0 (2026-11-16)
 
 
