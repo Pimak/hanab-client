@@ -12,6 +12,14 @@ The server remains authoritative. The library does not calculate game legality l
 unknown event payloads accessible through the raw wire message so newer server fields are not
 silently discarded; typed projections may still reject invalid or unsupported shapes.
 
+## Public HTTP helpers
+
+`PublishedHanabAvailabilityProbe` performs an unauthenticated, HTTP/1.1 `GET /` with bounded
+timeouts and returns an explicit `HttpProbeStatus` plus any received HTTP status. It accepts HTML
+responses and does not follow redirects. `PublishedHanabReplayFetcher` owns its HTTP client and
+decodes the bounded `/export/{gameId}` response into `ReplayDocument`; non-2xx responses expose
+their status with `TransportException.statusCode()`.
+
 ## Architecture
 
 The first implementation will be organized around four seams:
