@@ -1,3 +1,10 @@
+# [1.1.0](https://github.com/Pimak/hanab-client/compare/v1.0.1...v1.1.0) (2026-11-18)
+
+
+### Features
+
+* add published Hanab HTTP helpers ([b3fea79](https://github.com/Pimak/hanab-client/commit/b3fea79777ba85f181942531bc7f2e37f5dde6d4))
+
 ## [1.0.1](https://github.com/Pimak/hanab-client/compare/v1.0.0...v1.0.1) (2026-11-17)
 
 
