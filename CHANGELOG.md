@@ -1,3 +1,10 @@
+# [1.2.0](https://github.com/Pimak/hanab-client/compare/v1.1.0...v1.2.0) (2026-11-19)
+
+
+### Features
+
+* default bot clients to Hanab Live ([e68f71a](https://github.com/Pimak/hanab-client/commit/e68f71a679525c89bcf9931cbf46d827c68ebc88))
+
 # [1.1.0](https://github.com/Pimak/hanab-client/compare/v1.0.1...v1.1.0) (2026-11-18)
 
 
