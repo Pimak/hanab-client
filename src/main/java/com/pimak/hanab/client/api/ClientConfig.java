@@ -5,6 +5,8 @@ import java.time.Duration;
 
 public record ClientConfig(URI baseUri, Duration requestTimeout,
                            Duration reconnectInitial, Duration reconnectMax) {
+    /** Public Hanab Live endpoint used when callers do not select another compatible server. */
+    public static final URI DEFAULT_ENDPOINT = URI.create("https://hanab.live/");
     public ClientConfig {
         if (baseUri == null || requestTimeout == null || reconnectInitial == null || reconnectMax == null) throw new NullPointerException();
         if (baseUri.getUserInfo() != null) throw new IllegalArgumentException("base URI must not contain user information");
@@ -22,5 +24,7 @@ public record ClientConfig(URI baseUri, Duration requestTimeout,
     }
     private static boolean isLoopback(String host) { return "localhost".equalsIgnoreCase(host) || "127.0.0.1".equals(host) || "::1".equals(host); }
     /** Configuration for the only supported protocol client: a Hanab bot. */
+    public static ClientConfig bot() { return bot(DEFAULT_ENDPOINT); }
+    /** Configuration for a bot connected to an explicit compatible Hanab server. */
     public static ClientConfig bot(URI baseUri) { return new ClientConfig(baseUri, Duration.ofSeconds(15), Duration.ofMillis(250), Duration.ofSeconds(10)); }
 }

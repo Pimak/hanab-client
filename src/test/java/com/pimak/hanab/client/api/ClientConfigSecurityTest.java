@@ -5,6 +5,11 @@ import java.net.URI;
 import static org.junit.jupiter.api.Assertions.*;
 
 class ClientConfigSecurityTest {
+    @Test void botDefaultsToThePublicHanabLiveEndpoint() {
+        assertEquals(URI.create("https://hanab.live/"), ClientConfig.DEFAULT_ENDPOINT);
+        assertEquals(ClientConfig.DEFAULT_ENDPOINT, ClientConfig.bot().baseUri());
+    }
+
     @Test void remoteHttpIsRejectedButLoopbackHttpIsAvailableForLocalBotTests() {
         assertDoesNotThrow(() -> ClientConfig.bot(URI.create("http://localhost:1212")));
     }

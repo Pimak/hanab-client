@@ -8,6 +8,9 @@ lobby/table actions, game actions, replay commands and chat. HanabBot is the bot
 point: it always sends client=bot during login and WebSocket negotiation, allowing one bot
 identity to attend multiple tables as supported by Hanab Live.
 
+`ClientConfig.bot()` and `HanabBot.connect()` target `https://hanab.live` by default. Pass an
+explicit URI to connect to another compatible Hanab server.
+
 The server remains authoritative. The library does not calculate game legality locally and keeps
 unknown event payloads accessible through the raw wire message so newer server fields are not
 silently discarded; typed projections may still reject invalid or unsupported shapes.
